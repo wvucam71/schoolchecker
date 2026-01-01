@@ -28,8 +28,10 @@ def test_link_has_changed_triggers_email_with_new_args():
     """
     Tests that send_email is called with correct arguments when the final_url is different from EXPECTED_URL.
     """
+    mock_expected_urls = ["http://old-signup-link.com/form", "http://another-old-link.com"]
     with mock.patch.object(api.check_link, 'URL', "http://mock-website.com"), \
-         mock.patch.object(api.check_link, 'EXPECTED_URL', "http://old-signup-link.com/form"), \
+         mock.patch.object(api.check_link, 'EXPECTED_URL_STR', ",".join(mock_expected_urls)), \
+         mock.patch.object(api.check_link, 'EXPECTED_URLS', mock_expected_urls), \
          mock.patch.object(api.check_link, 'SENDER_EMAIL', "test@example.com"), \
          mock.patch.object(api.check_link, 'RECEIVER_EMAILS', ["recipient@example.com"]), \
          mock.patch.object(api.check_link, 'SMTP_USERNAME', "test@example.com"), \
@@ -43,7 +45,7 @@ def test_link_has_changed_triggers_email_with_new_args():
         mock_get.return_value.content = MOCK_WEBSITE_HTML
         mock_get.return_value.raise_for_status.return_value = None
 
-        # Configure mock_head to return a new, different final URL
+        # Configure mock_head to return a new, different final URL (not in EXPECTED_URLS)
         new_final_url = "http://new-signup-link.com/form"
         mock_head.return_value.url = new_final_url
         mock_head.return_value.raise_for_status.return_value = None
@@ -66,10 +68,12 @@ def test_link_has_changed_triggers_email_with_new_args():
 
 def test_link_is_same_sends_email_with_new_args():
     """
-    Tests that send_email is called with correct arguments when the final_url is the same as EXPECTED_URL.
+    Tests that send_email is called with correct arguments when the final_url is the same as one of the EXPECTED_URLS.
     """
+    mock_expected_urls = ["http://old-signup-link.com/form", "http://another-old-link.com"]
     with mock.patch.object(api.check_link, 'URL', "http://mock-website.com"), \
-         mock.patch.object(api.check_link, 'EXPECTED_URL', "http://old-signup-link.com/form"), \
+         mock.patch.object(api.check_link, 'EXPECTED_URL_STR', ",".join(mock_expected_urls)), \
+         mock.patch.object(api.check_link, 'EXPECTED_URLS', mock_expected_urls), \
          mock.patch.object(api.check_link, 'SENDER_EMAIL', "test@example.com"), \
          mock.patch.object(api.check_link, 'RECEIVER_EMAILS', ["recipient@example.com"]), \
          mock.patch.object(api.check_link, 'SMTP_USERNAME', "test@example.com"), \
@@ -83,8 +87,8 @@ def test_link_is_same_sends_email_with_new_args():
         mock_get.return_value.content = MOCK_WEBSITE_HTML
         mock_get.return_value.raise_for_status.return_value = None
 
-        # Configure mock_head to return the EXPECTED_URL (same as configured EXPECTED_URL)
-        same_final_url = api.check_link.EXPECTED_URL
+        # Configure mock_head to return one of the EXPECTED_URLS
+        same_final_url = "http://old-signup-link.com/form"
         mock_head.return_value.url = same_final_url
         mock_head.return_value.raise_for_status.return_value = None
 
@@ -102,8 +106,10 @@ def test_no_signup_link_found_sends_email():
     """
     Tests that an email is sent when no sign-up link is found on the page.
     """
+    mock_expected_urls = ["http://old-signup-link.com/form"] # Example for this test
     with mock.patch.object(api.check_link, 'URL', "http://mock-website.com"), \
-         mock.patch.object(api.check_link, 'EXPECTED_URL', "http://old-signup-link.com/form"), \
+         mock.patch.object(api.check_link, 'EXPECTED_URL_STR', ",".join(mock_expected_urls)), \
+         mock.patch.object(api.check_link, 'EXPECTED_URLS', mock_expected_urls), \
          mock.patch.object(api.check_link, 'SENDER_EMAIL', "test@example.com"), \
          mock.patch.object(api.check_link, 'RECEIVER_EMAILS', ["recipient@example.com"]), \
          mock.patch.object(api.check_link, 'SMTP_USERNAME', "test@example.com"), \
@@ -130,8 +136,10 @@ def test_url_env_var_not_set_sends_email():
     """
     Tests that an email is sent when the URL environment variable is not set.
     """
+    mock_expected_urls = ["http://old-signup-link.com/form"] # Example for this test
     with mock.patch.object(api.check_link, 'URL', None), \
-         mock.patch.object(api.check_link, 'EXPECTED_URL', "http://old-signup-link.com/form"), \
+         mock.patch.object(api.check_link, 'EXPECTED_URL_STR', ",".join(mock_expected_urls)), \
+         mock.patch.object(api.check_link, 'EXPECTED_URLS', mock_expected_urls), \
          mock.patch.object(api.check_link, 'SENDER_EMAIL', "test@example.com"), \
          mock.patch.object(api.check_link, 'RECEIVER_EMAILS', ["recipient@example.com"]), \
          mock.patch.object(api.check_link, 'SMTP_USERNAME', "test@example.com"), \
@@ -147,6 +155,7 @@ def test_url_env_var_not_set_sends_email():
             final_url="N/A",
             link_changed=False
         )
+
 
 
 

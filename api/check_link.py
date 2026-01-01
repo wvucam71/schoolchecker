@@ -6,7 +6,9 @@ import os
 
 # --- Configuration ---
 URL = os.environ.get("URL")
-EXPECTED_URL = os.environ.get("EXPECTED_URL")
+EXPECTED_URL_STR = os.environ.get("EXPECTED_URL")
+EXPECTED_URLS = [url.strip() for url in EXPECTED_URL_STR.split(',')] if EXPECTED_URL_STR else []
+
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
 RECEIVER_EMAILS = os.environ.get("RECEIVER_EMAILS", "").split(",")
 SMTP_SERVER = "smtp.gmail.com"
@@ -52,6 +54,8 @@ def send_email(original_url, found_link, final_url, link_changed):
 def check_website():
     """Checks the website for a new sign-up link and sends email notification."""
     global URL # Ensure URL is accessed from module scope
+    global EXPECTED_URLS # Ensure EXPECTED_URLS is accessed from module scope
+
 
     if not URL:
         print("Error: URL environment variable is not set.")
@@ -102,13 +106,13 @@ def check_website():
             print(f"Found sign-up link: {signup_link}")
             print(f"Redirects to: {final_url}")
 
-            if EXPECTED_URL and final_url != EXPECTED_URL:
+            if EXPECTED_URLS and final_url not in EXPECTED_URLS:
                 print("Sign-up link has changed!")
                 link_has_changed = True
-            elif EXPECTED_URL:
+            elif EXPECTED_URLS:
                 print("Sign-up link is the same.")
             else:
-                print("EXPECTED_URL not set, cannot determine if link has changed.")
+                print("EXPECTED_URLS not set, cannot determine if link has changed.")
 
         except requests.exceptions.RequestException as e:
             print(f"Error following redirect for {signup_link}: {e}")
