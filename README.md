@@ -19,4 +19,4 @@ The script is designed to be deployed as a serverless function on Vercel and run
     *   `SMTP_USERNAME`: Your email provider’s SMTP username (often the same as your sender email address).
     *   `SMTP_PASSWORD`: Your email provider’s SMTP password. **Important:** If you are using Gmail, you’ll need to generate an “App Password” to use here. You can find instructions on how to do that in Google’s help documentation.
 
-4.  **Deploy:** Vercel will automatically deploy your project. The cron job defined in `vercel.json` will run the `api/check_link.py` script every 6 hours.
+4.  **Deploy:** Vercel will automatically deploy your project. The cron job defined in `vercel.json` will run the `api/check_link.py` script every hour.
