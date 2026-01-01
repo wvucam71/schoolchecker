@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/check_link.py": {
+      "runtime": "python@3.9"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/check_link",
+      "schedule": "0 */6 * * *"
+    }
+  ]
+}
