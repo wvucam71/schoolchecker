@@ -1,7 +1,6 @@
 {
   "functions": {
     "api/check_link.py": {
-      "runtime": "python@3.9"
     }
   },
   "crons": [
