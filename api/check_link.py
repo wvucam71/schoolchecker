@@ -41,7 +41,7 @@ def check_website():
     # Try to find the link in a few ways
     signup_link = None
     # 1. Look for a link with "Sign Up Here" text
-    sign_up_text = soup.find(text="Sign Up Here")
+    sign_up_text = soup.find(string="Sign Up Here")
     if sign_up_text:
         parent_anchor = sign_up_text.find_parent("a")
         if parent_anchor and parent_anchor.has_attr("href"):
